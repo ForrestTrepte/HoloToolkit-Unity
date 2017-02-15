@@ -11,7 +11,18 @@ public class PhotoCaptureExample : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+        // Force the resolution to 1280x720.
+        Resolution cameraResolution = new Resolution { width = 1280, height = 720 }; // This resolution fails.
+        //cameraResolution = new Resolution { width = 2048, height = 1152 }; // This resolution would succeed.
+
+        foreach (Resolution resolution in PhotoCapture.SupportedResolutions)
+        {
+            if (resolution.width == cameraResolution.width && resolution.height == cameraResolution.height)
+            {
+                Debug.LogFormat("{0}x{1} is a valid value in PhotoCapture.SupportedResolutions.", cameraResolution.width, cameraResolution.height);
+            }
+        }
+
         targetTexture = new Texture2D(cameraResolution.width, cameraResolution.height);
 
         // Create a PhotoCapture object
@@ -33,18 +44,10 @@ public class PhotoCaptureExample : MonoBehaviour
 
     void OnCapturedPhotoToMemory(PhotoCapture.PhotoCaptureResult result, PhotoCaptureFrame photoCaptureFrame)
     {
+        Debug.Log(result.success ? "OnCapturedPhotoToMemory succeeded" : "OnCapturedPhotoToMemory failed");
+
         // Copy the raw image data into our target texture
         photoCaptureFrame.UploadImageDataToTexture(targetTexture);
-
-        // Create a gameobject that we can apply our texture to
-        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
-        quadRenderer.material = new Material(Shader.Find("Custom/Unlit/UnlitTexture"));
-
-        quad.transform.parent = this.transform;
-        quad.transform.localPosition = new Vector3(0.0f, 0.0f, 3.0f);
-
-        quadRenderer.material.SetTexture("_MainTex", targetTexture);
 
         // Deactivate our camera
         photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
