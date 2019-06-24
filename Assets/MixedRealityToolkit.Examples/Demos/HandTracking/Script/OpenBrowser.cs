@@ -12,15 +12,15 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             Debug.Log($"BrowserIntegration: Launching browser at {url}");
 
 #if WINDOWS_UWP
-        UnityEngine.WSA.Application.InvokeOnUIThread(async () =>
-        {
-            var uri = new System.Uri(url);
-            bool result = await Windows.System.Launcher.LaunchUriAsync(uri);
-            if (!result)
+            UnityEngine.WSA.Application.InvokeOnUIThread(async () =>
             {
-                Debug.LogError("Browser failed to launch.");
-            }
-        }, false);
+                var uri = new System.Uri(url);
+                bool result = await global::Windows.System.Launcher.LaunchUriAsync(uri);
+                if (!result)
+                {
+                    Debug.LogError("Browser failed to launch.");
+                }
+            }, false);
 #else
             Application.OpenURL(url);
 #endif
