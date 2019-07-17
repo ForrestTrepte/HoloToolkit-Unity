@@ -94,6 +94,8 @@ namespace Microsoft.MixedReality.Toolkit
         /// <param name="profile"></param>
         public void ResetConfiguration(MixedRealityToolkitConfigurationProfile profile)
         {
+            string profilestr = profile != null ? profile.name : "null";
+            Debug.Log($"* ResetConfiguration {profilestr}");
             if (activeProfile != null)
             {
                 // Services are only enabled when playing.
@@ -727,6 +729,7 @@ namespace Microsoft.MixedReality.Toolkit
             {   // If we don't have an active instance
                 // Choose the first instance in our list
                 activeInstance = setAsActiveInstance ? toolkitInstance : toolkitInstances[0];
+                Debug.Log($"* RegisterInstance set activeInstance {activeInstance}");
                 activeInstance.InitializeInstance();
             }
         }
@@ -1505,6 +1508,8 @@ namespace Microsoft.MixedReality.Toolkit
                             break;
 
                         case PlayModeStateChange.ExitingEditMode:
+                            string prof = activeInstance == null ? "null activeInstance" : (activeInstance.activeProfile != null ? activeInstance.activeProfile.name : "null activeProfile");
+                            Debug.Log($"* ExitingEditMode {prof}");
                             isApplicationQuitting = false;
                             // Do a profile check
                             if (activeInstance != null && activeInstance.activeProfile == null)
